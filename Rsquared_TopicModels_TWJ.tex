@@ -1,0 +1,87 @@
+\documentclass[12pt]{amsart}
+\usepackage{setspace}
+\doublespacing
+\textwidth=5.5in
+
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{ amssymb }
+\usepackage{longtable}
+
+\newcommand{\iid}{\stackrel{iid}{\sim}}
+\newcommand{\trip}[3]{#1_{#2}^{(#3)}}
+\newcommand{\bb}[1]{\mathbf{#1}}
+\newcommand{\z}{\mathbf{z}}
+\newcommand{\w}{\mathbf{w}}
+\newcommand{\X}{\mathbf{X}}
+\newcommand{\Y}{\mathbf{Y}}
+\newcommand{\myn}[3]{n_{#1,#2}^{(#3)}}
+\newcommand{\Rea}{\mathbb{R}}
+\newcommand{\topics}{\text{ topics }}
+
+\title{$R^2$ For Topic Models}
+\author{Thomas W. Jones}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This document proposes a new (old) metric for evaluating goodness of fit in topic models, the coefficient of determination, or $R^2$.
+\end{abstract}
+
+\section{Introduction}
+
+\section{Probabilistic Topic Models}
+Probabilistic topic models are a family of stochastic models for estimating abstract ''topics" in a set of documents. Many topic models have been developed and provide a flexible family of topic models. Some include frequently available metadata about documents, such as the time of the publication in Dynamic Topic Models, or the author and location of the publication. Most topic models are Bayesian, though probabilistic latent semantic analysis (pLSA), wich is sometimes called probabilistic latent semantic indexing (pLSI) is frequentist. All probabilistic topic models share common features. Without loss of generality: all topic models model documents as a mixture of multinomial distributions. The goal of topic modeling is to estimate the parameters of these multinomial distributions. Consider latent Dirichlet allocation (LDA). 
+
+\begin{align*}
+\phi_k \sim& Dir_V(\beta) && k\in\{1, \ldots, K\} \\
+{\theta}_d \sim& Dir_K({\alpha}) && d\in\{1, \ldots, D\}\\
+z_w \sim& Multinom_K({\theta}_d) && d\in \{1, \ldots, D\}, w\in\{1,\ldots, N_d\}\\
+v_w \sim& Multinom_V({\phi}_{z_w}) && d\in \{1, \ldots, D\}, w\in\{1,\ldots,N_d\}\\
+\end{align*} where $K$ is the number of latent factors or ``topics", $V$ is the number terms in the model, and $N_d$ is the number of terms in the $d^{th}$ document. 
+
+A topic model is generally represented by two matrices. The first, $\Phi$ 
+
+\section{Goodness-of-Fit For Topic Models}
+
+According to an often-quoted but never cited definition, ``the goodness of fit of a statistical model describes how well it fits a set of observations. Measures of goodness of fit typically summarize the discrepancy between observed values and the values expected under the model in question."\footnote{This quote appears verbatim on Wikipedia and countless books, papers, and websites.} Goodness of fit is not the only consideration in statistical modeling. In a model predicting cancer recurrence rates, for example, researchers' primary concern is likely which predictors are most associated with cancer recurrence, rather than explicit prediction for future patients. However, goodness of fit is a key metric in establishing trust in a model. If an easily-interpreted model does not fit the data well, it cannot be trusted for inference.\footnote{The opposite is not necessarily true; interpretability is not necessary for accurate prediction.} Certain processes are noisier than others, making goodness of fit more or less important. Consider the difference between financial models and microeconomic models. In finance, the high variability of the data makes an $R^2$ of $0.1$ relatively high. In microeconomics, however, an $R^2$ of $0.1$ is not compelling. Many accurate and robust predictive models are ``black boxes", making inference difficult. Researchers may trade off some goodness of fit for interpretability. However, the model must still fit the data reasonably well if inferences are to be convincing. This tension between interpretability and goodness of fit is present in topic modeling
+
+
+Topic models are generative models of word frequency. For a set of learned distributions of topics and topic proportions, denoted by $\hat{\phi_k}$ and $\hat{\theta_d}$, 
+
+\section{Review: $R^2$ for the General Case}
+
+The common definition of $R^2$ is a ratio of sums of squared errors. For a model, $\f$, of outcome variable, $y$, where there are $n$ observations, $R^2$ is derived as follows:
+
+\begin{align*}
+& \text{The mean of the data is} & \bar{y} &= \frac{1}{n}\sum_{i=1}^n{y_i}\\
+& \text{The total sum of squares is} & SS_{tot.} &= \sum_{i-1}^n{(y_i-\bar{y})^2}\\
+& \text{The model sum of squares is} & SS_{model} &= \sum_{i-1}^n{(f_i-\bar{y})^2}\\
+& \text{The residual sum of squares is} & SS_{resid.} &= \sum_{i-1}^n{(f_i-y_i)^2}\\
+& \text{Finally, the coefficient of determination is} & R^2 &\equiv 1 - \frac{SS_{resid.}}{SS_{tot.}}\\
+\end{align*}
+
+
+
+\section{$R^2$ For Topic Models}
+
+
+
+\section{Conclusion}
+
+
+
+
+\section{Appendix}
+
+\newpage
+\begin{thebibliography}{9}
+
+ 
+
+\end{thebibliography}
+
+
+\end{document}
