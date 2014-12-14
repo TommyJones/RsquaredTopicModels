@@ -1,0 +1,1 @@
+[1] "corresponds to a model with R-squared = 0.981648653873261"

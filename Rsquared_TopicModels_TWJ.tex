@@ -33,7 +33,7 @@ This document proposes a new (old) metric for evaluating goodness of fit in topi
 \section{Introduction}
 
 \section{Probabilistic Topic Models}
-Probabilistic topic models are a family of stochastic models for estimating abstract ''topics" in a set of documents. Many topic models have been developed and provide a flexible family of topic models. Some include frequently available metadata about documents, such as the time of the publication in Dynamic Topic Models, or the author and location of the publication. Most topic models are Bayesian, though probabilistic latent semantic analysis (pLSA), wich is sometimes called probabilistic latent semantic indexing (pLSI) is frequentist. All probabilistic topic models share common features. Without loss of generality: all topic models model documents as a mixture of multinomial distributions. The goal of topic modeling is to estimate the parameters of these multinomial distributions. Consider latent Dirichlet allocation (LDA). 
+Probabilistic topic models are a family of stochastic models for estimating abstract ``topics" in a set of documents. Many topic models have been developed and provide a flexible family of topic models. Some include frequently available metadata about documents, such as the time of the publication in Dynamic Topic Models, or the author and location of the publication. Most topic models are Bayesian, though probabilistic latent semantic analysis (pLSA), wich is sometimes called probabilistic latent semantic indexing (pLSI) is frequentist. All probabilistic topic models share common features. Without loss of generality: all topic models model documents as a mixture of multinomial distributions. The goal of topic modeling is to estimate the parameters of these multinomial distributions. Consider latent Dirichlet allocation (LDA): 
 
 \begin{align*}
 \phi_k \sim& Dir_V(\beta) && k\in\{1, \ldots, K\} \\
@@ -42,7 +42,7 @@ z_w \sim& Multinom_K({\theta}_d) && d\in \{1, \ldots, D\}, w\in\{1,\ldots, N_d\}
 v_w \sim& Multinom_V({\phi}_{z_w}) && d\in \{1, \ldots, D\}, w\in\{1,\ldots,N_d\}\\
 \end{align*} where $K$ is the number of latent factors or ``topics", $V$ is the number terms in the model, and $N_d$ is the number of terms in the $d^{th}$ document. 
 
-A topic model is generally represented by two matrices. The first, $\Phi$ 
+A topic model's estimates are generally represented in two matrices., $\Phi$ and $\Theta$ The $d$-th row of $\Theta$ is $\theta_d$, whose $k$-th entry is the probability of topic $k$ conditional on document $d$. The $k$-th row of $\Phi$ is $phi_k$, whose $v$-th entry is the probability of word $v$ conditional on topic $k$. 
 
 \section{Goodness-of-Fit For Topic Models}
 
@@ -53,18 +53,59 @@ Topic models are generative models of word frequency. For a set of learned distr
 
 \section{Review: $R^2$ for the General Case}
 
-The common definition of $R^2$ is a ratio of sums of squared errors. For a model, $\f$, of outcome variable, $y$, where there are $n$ observations, $R^2$ is derived as follows:
+The common definition of $R^2$ is a ratio of sums of squared errors; $R^2 &\equiv 1 - \frac{SS_{resid.}}{SS_{tot.}}$. 
+
+For a model, $\f$, of outcome variable, $y$, where there are $n$ observations, $R^2$ is derived as follows:
 
 \begin{align*}
-& \text{The mean of the data is} & \bar{y} &= \frac{1}{n}\sum_{i=1}^n{y_i}\\
-& \text{The total sum of squares is} & SS_{tot.} &= \sum_{i-1}^n{(y_i-\bar{y})^2}\\
-& \text{The model sum of squares is} & SS_{model} &= \sum_{i-1}^n{(f_i-\bar{y})^2}\\
-& \text{The residual sum of squares is} & SS_{resid.} &= \sum_{i-1}^n{(f_i-y_i)^2}\\
-& \text{Finally, the coefficient of determination is} & R^2 &\equiv 1 - \frac{SS_{resid.}}{SS_{tot.}}\\
+	& \text{The mean of the data is} & \bar{y} &= E[y] \\ %\frac{1}{n}\sum_{i=1}^n{y_i}\\
+	& \text{The total sum of squares is} & SS_{tot.} &= \sum_{i-1}^n{(y_i-\bar{y})^2}\\
+	% & \text{The model sum of squares is} & SS_{model} &= \sum_{i-1}^n{(f_i-\bar{y})^2}\\
+	& \text{The residual sum of squares is} & SS_{resid.} &= \sum_{i-1}^n{(f_i-y_i)^2}\\
+	& \text{Finally, the coefficient of determination is} & R^2 &\equiv 1 - \frac{SS_{resid.}}{SS_{tot.}}\\
 \end{align*}
 
+$R^2$, as defined above, is bound between 0 and 1 when $f$ is a linear model. If $f$ is not linear, then negative values of $R^2$ are possible. In this case, $SS_{resid.}$ may be larger than $SS_{tot.}$ and then $R^2$ may be negative. However, when $f$ perfectly fit the data, $f_i=y_i\forall i $ and $SS_{resid}=0$. In this case, $R^2$ is equal to one. 
+
+In some cases, $SS_{tot.}$ can be partitioned into two parts, $SS_{tot.} = SS_{resid.} + SS_{model}$. $SS_{model}$ is the model sum of squares: $SS_{model} &= \sum_{i-1}^n{(f_i-\bar{y})^2}$. When this relation holds, then $R^2$ is interpreted as the proportion of variance of $y$ explained by $f$. This is derived below.\footnote{TOMMY, YOU NEED A REFERENCE FOR THIS AS THIS DERIVATION DOES NOT PROVE THAT $E(f) = y$. Also, does this interpretation hold in the Bayesian case? Must investigate.}
+
+\begin{align*}
+	& V(f) &= E[(f - E[f])^2]\\
+	& 	   &= E[(f - E[y])^2]\\
+	&      &= E[(f - \bar{y})]
+	&      &= \frac{1}{n}\sum_{i-1}^n{(f_i-\bar{y})^2}\\
+	&      &= \frac{1}{n}SS_{model}\\
+	& V(y) &= E[(y - E[y])^2]\\
+	&      &= E[(y - \bar{y})^2]\\
+	&      &= \frac{1}{n}\sum_{i-1}^n{(y_i-\bar{y})^2}\\
+	&      &= \frac{1}{n}SS_{tot.}\\
+	
+	& \frac{V(f)}{V(y)} &= \frac{SS_{model}\n}{SS_{tot.}\n}\\
+	&                   &= \frac{SS_{model}}{SS_{tot.}}\\
+	&                   &= 1 - \frac{SS_{resid.}}{SS_{tot.}} \text{\footnote{This holds because $SS_{tot.} = SS_{model} + SS_{resid.} \Rightarrow 
+	                                                               \frac{SS_{model}}{SS_{tot.} + \frac{SS_{resid.}}{SS_{tot.}} = 1}$}}\\
+	&                   &\equiv R^2
+\end{align*}
+
+\section{ A Geometric Interpretation of $R^2$}
+$R^2$ has a geometric interpretation. As we will see later, this interpretation derives an $R-2$ for topic models. In this interpretation, $SS_{tot.}$ is the total squared-euclidean distance from each $y_i$ to the mean outcome, $\bar{y}$; $SS_{resid.}$ is the total squared-euclidean distance from each $y_i$ to its predicted value under the model, $f_i$. Recall that for any two points $p, q \in \mathbb{R}_m$
+
+\begin{align*}
+	d(p,q) = \sqrt{\sum_{j=1}^m{(p_j - q_j)^2}}\\
+\end{align*} where $d()$ denotes the euclidean distance between $p$ and $q$. $R^2$ is often taught in the context of ordinary least squares (OLS) where $y_i, f_i \in \mathbb{R}_1$. In that case, $d(y_i, f_i) = \sqrt{(y_i - f_i)^2}$; by extension $d(y_i, \bar{y}) = \sqrt{(y_i - \bar{y})^2}$.\footnote{In the one-dimensional case, where $y_i , f_i \in \mathbb{R}_1$, $SS_{resid.}$ can be considered the squared-euclidean distance between the vectors $y$ and $f$. However, this relationship does not hold when $y_i , f_i \in \mathbb{R}_m ; m > 1$.} In the multidimensional case where $y_i, f_i \in \mathbb{R}_m; m > 1$, then $\bar{y} \in \mathbb{R}_m$ as well. Here, $\bar{y}$ represents the center of $y$ in $m$ space.
+
+We can rewrite $R^2$ using the relationships above. 
+
+\begin{align*}
+	& SS_{tot.} &= \sum_{i=1}^n{d(y_i, \bar{y})^2}\\
+	& SS_{resid.} &= \sum_{i=1}^n{d(y_i, f_i)^2}\\
+	\Rightarrow & R^2 &= 1 - frac{\sum_{i=1}^n{d(y_i, f_i)^2}}{\sum_{i=1}^n{d(y_i, \bar{y})^2}}
+\end{align*}
+
+\includegraphics{{output/geometric1.png}}
 
 
+%"Coefficient of Determination" by Orzetto - Own work. Licensed under CC BY-SA 3.0 via Wikimedia Commons - http://commons.wikimedia.org/wiki/File:Coefficient_of_Determination.svg#mediaviewer/File:Coefficient_of_Determination.svg
 \section{$R^2$ For Topic Models}
 
 
